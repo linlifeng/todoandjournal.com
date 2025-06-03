@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Google OAuth2 Callback</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 2rem;
+      background: #f0f0f0;
+    }
+    pre {
+      background: #fff;
+      padding: 1rem;
+      border: 1px solid #ccc;
+      overflow-x: auto;
+    }
+  </style>
+</head>
+<body>
+  <h1>Authenticating...</h1>
+  <p>Please wait while we complete the login process.</p>
+  <pre id="output">Loading...</pre>
+
+  <script>
+    async function handleOAuthCallback() {
+      const output = document.getElementById('output');
+      const params = new URLSearchParams(window.location.search);
+      const code = params.get("code");
+      const error = params.get("error");
+
+      if (error) {
+        output.textContent = `Error during login: ${error}`;
+        return;
+      }
+
+      const verifier = localStorage.getItem("pkce_verifier");
+
+      if (!code || !verifier) {
+        output.textContent = "Missing authorization code or PKCE verifier.";
+        return;
+      }
+
+      const tokenEndpoint = "https://oauth2.googleapis.com/token";
+
+      const body = new URLSearchParams({
+        grant_type: "authorization_code",
+        code: code,
+        client_id: "196261644414-ubkdto51sfvvbh368q80pfe5cqf3k0ut.apps.googleusercontent.com",
+        redirect_uri: "https://todoandjournal.com/oauth2callback", 
+        code_verifier: verifier
+      });
+
+      try {
+        const response = await fetch(tokenEndpoint, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          body: body.toString()
+        });
+
+        const tokens = await response.json();
+
+        if (tokens.error) {
+          output.textContent = "Error fetching tokens:\n" + JSON.stringify(tokens, null, 2);
+          return;
+        }
+
+        // Store token if needed
+        localStorage.setItem("access_token", tokens.access_token);
+        localStorage.setItem("id_token", tokens.id_token);
+
+        output.textContent = "Authentication successful:\n" + JSON.stringify(tokens, null, 2);
+
+        // Optionally redirect or update UI
+        // window.location.href = '/'; // or call a function to fetch user info
+
+      } catch (err) {
+        output.textContent = "Network or parsing error:\n" + err;
+      }
+    }
+
+    handleOAuthCallback();
+  </script>
+</body>
+</html>
+

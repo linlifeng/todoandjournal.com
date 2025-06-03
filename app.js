@@ -3181,34 +3181,31 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 
+    const CLIENT_ID = '196261644414-ubkdto51sfvvbh368q80pfe5cqf3k0ut.apps.googleusercontent.com'; // Replace with your real client ID
+    const REDIRECT_URI = 'https://todoandjournal.com/oauth2callback'; // Replace with your hosted callback page
+    let isLoggedIn = false;
 
 
     function checkAuthStatus() {
         const token = localStorage.getItem('authToken');
-
         if (!token) {
             isLoggedIn = false;
+            updateUI();
         } else {
-            isLoggedIn = true;
-            // If you have a verifyToken function that takes the token and verifies it, call it
             verifyToken(token);
         }
-
-        updateAuthUI();
     }
 
 
+
     function verifyToken(token) {
-        // Verify token is valid by making a small request
         fetch('https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=' + token)
             .then(response => {
                 if (!response.ok) {
-                    // Token is invalid, remove it from localStorage
                     localStorage.removeItem('authToken');
                     isLoggedIn = false;
                     updateAuthUI();
                 } else {
-                    // Token valid, can do additional processing here if needed
                     isLoggedIn = true;
                     updateAuthUI();
                 }
@@ -3225,32 +3222,52 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function handleAuth() {
         if (isLoggedIn) {
-            // Log out: remove token from localStorage
             localStorage.removeItem('authToken');
             isLoggedIn = false;
             showSyncStatus('Logged out');
             updateAuthUI();
         } else {
-            // Log in: simulate getting an auth token interactively
-            getAuthToken(true)
-                .then(token => {
-                    // Save token to localStorage
-                    localStorage.setItem('authToken', token);
-                    isLoggedIn = true;
-                    showSyncStatus('Logged in');
-                    updateAuthUI();
-                    // Sync data after login
-                    syncData();
-                })
-                .catch(error => {
-                    console.error('Authentication error:', error);
-                    showSyncStatus('Login failed');
-                });
+            getAuthToken().then(() => {
+                showSyncStatus('Logged in');
+                updateAuthUI();
+                syncData();  // Optional: your app-specific logic
+            }).catch(err => {
+                console.error("Login failed", err);
+                showSyncStatus("Login failed");
+            });
         }
     }
 
 
+    async function getAuthToken() {
+        const codeVerifier = generateCodeVerifier();
+        const codeChallenge = await generateCodeChallenge(codeVerifier);
+        localStorage.setItem("pkce_verifier", codeVerifier);
 
+        const authUrl = new URL("https://accounts.google.com/o/oauth2/v2/auth");
+        authUrl.searchParams.set("client_id", CLIENT_ID);
+        authUrl.searchParams.set("redirect_uri", REDIRECT_URI);
+        authUrl.searchParams.set("response_type", "code");
+        authUrl.searchParams.set("scope", "openid email profile");
+        authUrl.searchParams.set("code_challenge", codeChallenge);
+        authUrl.searchParams.set("code_challenge_method", "S256");
+
+        window.location.href = authUrl.toString();
+    }
+
+    function generateCodeVerifier() {
+        const array = new Uint32Array(56 / 2);
+        window.crypto.getRandomValues(array);
+        return Array.from(array, dec => ('0' + dec.toString(16)).slice(-2)).join('');
+    }
+
+    async function generateCodeChallenge(codeVerifier) {
+        const encoder = new TextEncoder();
+        const data = encoder.encode(codeVerifier);
+        const digest = await window.crypto.subtle.digest('SHA-256', data);
+        return btoa(String.fromCharCode(...new Uint8Array(digest)))
+            .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+    }
 
 
 
