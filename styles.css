@@ -946,67 +946,6 @@ h2 {
     box-shadow: 0 4px 8px rgba(92, 106, 196, 0.1);
 }
 
-@media (max-width: 768px) {
-    .container {
-        flex-direction: column;
-        height: auto;
-    }
-
-    .calendar-section,
-    .journal-section,
-    .todo-section {
-        border-right: none;
-        border-bottom: 1px solid rgba(156, 163, 175, 0.2);
-        min-height: 60vh;
-        max-width: 100%;
-        margin-right: 0px;
-    }
-
-    .sync-status {
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-
-    .data-backup {
-        margin: 10px 0 0;
-    }
-
-    .view-tabs {
-        flex-wrap: wrap;
-        gap: 8px;
-    }
-
-    .view-tab {
-        flex: 1;
-        min-width: 80px;
-        text-align: center;
-    }
-
-          .container.view-journal .calendar-section,
-          .container.view-journal .todo-section,
-          .container.view-calendar .journal-section,
-          .container.view-calendar .todo-section,
-          .container.view-todo .calendar-section,
-          .container.view-todo .journal-section {
-              opacity: 0;
-              max-width: 0;
-              flex: 0 0 0;
-              padding: 0;
-              overflow: hidden;
-              transition: all 0.5s ease;
-              pointer-events: none;
-          }
-    
-          .container.view-journal .journal-section,
-          .container.view-calendar .calendar-section,
-          .container.view-todo .todo-section {
-              flex: 1 1 auto;
-              max-width: 100%;
-              opacity: 1;
-              transition: all 0.5s ease;
-          }
-
-}
 
 /* Dreamy animations */
 @keyframes fadeIn {
@@ -2053,6 +1992,12 @@ body.locked .sync-status {
             color: rgba(255, 255, 255, 1);
 }
 
+  .search-lock-row {
+      display: flex;
+      gap: 0.5rem;
+      width: 100%;
+      align-items: center;
+  }
 /* Search input */
 .search-wrapper {
     display: flex;
@@ -2431,21 +2376,107 @@ li[draggable="true"][data-color].dragging {
 
 /* Responsive design */
 @media (max-width: 768px) {
-    .sorting-controls {
+    .container {
         flex-direction: column;
-        align-items: stretch;
-        gap: 15px;
+        height: auto;
     }
 
-    .view-mode-toggle {
-        margin-left: 0;
-        align-self: center;
+    .calendar-section,
+    .journal-section,
+    .todo-section {
+        border-right: none;
+        border-bottom: 1px solid rgba(156, 163, 175, 0.2);
+        min-height: 60vh;
+        max-width: 100%;
+        margin-right: 0px;
     }
 
-    .sort-button {
-        flex: 1;
-        text-align: center;
+    .sync-status {
+        flex-wrap: wrap;
+        justify-content: center;
     }
+
+    .data-backup {
+        margin: 10px 0 0;
+    }
+
+  .toolbar {
+      flex-direction: column;
+      gap: 0.6rem;
+      backdrop-filter: blur(10px);
+      width: 100%;
+      margin: 0;
+      padding: 10px;
+  }
+
+  .search-lock-row {
+      display: flex;
+      gap: 0.5rem;
+      width: 100%;
+      align-items: center;
+  }
+
+  .search-wrapper {
+      flex: 1;
+  }
+
+  #search-input {
+      min-width: 0;
+  }
+
+  .lock-button {
+      height: 40px;
+      width: 40px;
+      flex-shrink: 0;
+  }
+    .container.view-journal .calendar-section,
+    .container.view-journal .todo-section,
+    .container.view-calendar .journal-section,
+    .container.view-calendar .todo-section,
+    .container.view-todo .calendar-section,
+    .container.view-todo .journal-section {
+        display: none;
+        opacity: 0;
+        max-width: 0;
+        flex: 0 0 0;
+        padding: 0;
+        overflow: hidden;
+        transition: all 0.5s ease;
+        pointer-events: none;
+    }
+
+    .container.view-journal .journal-section,
+    .container.view-calendar .calendar-section,
+    .container.view-todo .todo-section {
+        flex: 1 1 auto;
+        max-width: 100%;
+        opacity: 1;
+        transition: all 0.5s ease;
+    }
+
+    
+    .todo-header-row{
+        flex-direction: column;
+    }
+
+  .sorting-controls {
+      /* flex-direction: column; */
+      align-items: stretch;
+      gap: 1rem;
+      width: 100%;
+  }
+
+  .sort-buttons,
+  .view-mode-toggle {
+      justify-content: space-around;
+      width: 100%;
+  }
+
+  .sort-button,
+  .view-mode-btn {
+      flex: 1;
+      max-width: none;
+  }
 
     .color-group-header {
         padding: 10px 12px;
