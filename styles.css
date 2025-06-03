@@ -1,0 +1,2489 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    /* font-family: "AvrileSans-ExtraLight",'MondaySans', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; */
+    /* font-family: "handwriting2",'Tony','chinese1', 'HandwrittenFont'; */
+}
+
+:root {
+    --handwritten_fonts: "handwriting2", 'Tony', 'chinese1', 'HandwrittenFont';
+    --main_font_color: #3a3a3a;
+    --faint_font_color: #6b6b6b;
+    --dark_font_color: #1f1f1f;
+    --main_theme_color: #5c6ac4;
+}
+
+        @font-face {
+            font-family: 'HandwrittenFont';
+            /* Choose a unique name for your font */
+            src: url('./assets/handwritten.ttf');
+            /* Path to your font file */
+            font-style: normal;
+            font-weight: normal;
+            /* Or any desired weight */
+        }
+        @font-face {
+            font-family: 'Tony';
+            /* Choose a unique name for your font */
+            src: url('./assets/QETonyFlores.ttf');
+            /* Path to your font file */
+            font-style: normal;
+            font-weight: normal;
+            /* Or any desired weight */
+        }
+        @font-face {
+            font-family: 'chinese1';
+            /* Choose a unique name for your font */
+            src: url('./assets/chinese1.ttf');
+            /* Path to your font file */
+            font-style: normal;
+            font-weight: normal;
+            /* Or any desired weight */
+        }
+        @font-face {
+            font-family: 'handwriting2';
+            /* Choose a unique name for your font */
+            src: url('./assets/AbsolutelyLovelyDEMO-Regular.otf');
+            /* Path to your font file */
+            font-style: normal;
+            font-weight: normal;
+            /* Or any desired weight */
+        }
+
+                                                                 @font-face {
+                                                                     font-family: 'MondaySans';
+                                                                     /* Choose a unique name for your font */
+                                                                     src: url('./assets/MondaySans.ttf');
+                                                                     /* Path to your font file */
+                                                                     font-style: normal;
+                                                                     font-weight: normal;
+                                                                     /* Or any desired weight */
+                                                                 }
+
+                                                                @font-face {
+                                                                    font-family: 'AvrileSans-ExtraLight';
+                                                                    /* Choose a unique name for your font */
+                                                                    src: url('./assets/AvrileSans-ExtraLight.otf');
+                                                                    /* Path to your font file */
+                                                                    font-style: normal;
+                                                                    font-weight: normal;
+                                                                    /* Or any desired weight */
+                                                                }
+                                                                @font-face {
+                                                                    font-family: 'Inter';
+                                                                    /* Choose a unique name for your font */
+                                                                    src: url('./assets/Inter-VariableFont_opsz,wght.ttf');
+                                                                    /* Path to your font file */
+                                                                    font-style: normal;
+                                                                    font-weight: normal;
+                                                                    /* Or any desired weight */
+                                                                }
+                                                                                                                               
+                                                                
+:root {
+    --section_gap: 35px;
+    --button-color: #5c6ac4;
+}
+/* Reset margin and padding */
+html,body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow-x: hidden;
+    /* optional: prevent horizontal scroll */
+    /* background: #f0f0f0; */
+    /* or your preferred background */
+}
+
+body {
+    background: linear-gradient(135deg, #f5f7fa 0%, #e4eaf6 100%);
+    padding: 20px;
+    /* min-height: 100vh; */
+    color: var(--main_font_color);
+
+        /* font-family: "AvrileSans-ExtraLight",'MondaySans', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+    transition: background-image 0.2s, opacity 0.2s ease;
+    /* text-shadow: 1px 1px 10px #fff, 1px 1px 10px #ccc; */
+}
+
+textarea{
+    font-family: var(--handwritten_fonts);
+}
+#bg-fade-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0;
+    pointer-events: none;
+    z-index: -1;
+    transition: opacity 1s ease;
+}
+
+.content-wrapper{
+    max-width: 1600px;
+    margin: 0 auto;
+}
+.container{
+    display: flex;
+    max-width: 1600px;
+    margin: auto;
+    margin-top: 15px;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(8px);
+    border-radius: 15px;
+    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
+    overflow: hidden;
+    height: 83vh;
+}
+
+h2 {
+    font-weight: 500;
+    margin-bottom: 20px;
+    color: #5c6ac4;
+    text-align: center;
+    font-size: 1.5rem;
+}
+
+/* transion effects */
+/* Base styles for all sections */
+.calendar-section,
+.journal-section,
+.todo-section {
+    transition:
+        flex 0.4s ease-in-out 0.1s,
+        /* Delay flex-shrink */
+        max-width 0.4s ease-in-out,
+        opacity 0.3s ease-in-out 0.1s,
+        /* Delay opacity */
+        filter 0.3s ease-in-out,
+        padding 0.4s ease-in-out,
+        margin 0.4s ease-in-out;
+    overflow: hidden;
+    min-width: 0 !important;
+    visibility: visible;
+    /* Needed for delayed hiding */
+}
+
+/* When a section is COLLAPSING (losing focus) */
+.container.view-calendar .journal-section,
+.container.view-calendar .todo-section,
+.container.view-journal .calendar-section,
+.container.view-journal .todo-section,
+.container.view-todo .calendar-section,
+.container.view-todo .journal-section {
+    flex: 0 !important;
+    max-width: 0 !important;
+    opacity: 0;
+    filter: blur(5px);
+    pointer-events: none;
+    padding: 0 !important;
+    margin: 0 !important;
+    transition:
+        flex 0.3s ease-in-out,
+        /* Faster collapse */
+        max-width 0.3s ease-in-out 0.1s,
+        /* Delay collapse */
+        opacity 0.2s ease-in-out,
+        /* Faster fade-out */
+        filter 0.2s ease-in-out,
+        padding 0.3s ease-in-out,
+        margin 0.3s ease-in-out,
+        visibility 0s linear 0.4s;
+    /* Hide AFTER collapse */
+    visibility: visible;
+    /* Stay visible during transition */
+}
+
+/* When a section is EXPANDING (gaining focus) */
+.container.view-calendar .calendar-section,
+.container.view-journal .journal-section,
+.container.view-todo .todo-section {
+    flex: 9;
+    max-width: 100%;
+    opacity: 1;
+    filter: blur(0);
+    pointer-events: auto;
+    padding: 1rem;
+    margin: 0;
+    transition:
+        flex 1s ease-in-out,
+        max-width 0.8s ease-in-out,
+        opacity 0.3s ease-in-out 0.1s,
+        /* Delay fade-in */
+        filter 0.3s ease-in-out,
+        padding 0.4s ease-in-out,
+        margin 0.4s ease-in-out,
+        visibility 0s linear 0s;
+    /* Show immediately */
+}
+
+/* All sections visible (balanced view) */
+.container.view-all .calendar-section,
+.container.view-all .journal-section,
+.container.view-all .todo-section {
+    flex: 1;
+    max-width: 10000px;
+    opacity: 1;
+    pointer-events: auto;
+    filter: blur(0);
+    padding: 1rem;
+}
+.calendar-section>*,
+.journal-section>*,
+.todo-section>* {
+    min-width: 0 !important;
+    /* Allow children to shrink */
+}
+
+/* end transition */
+
+
+/* Calendar Section */
+.clock {
+    font-size: 4rem;
+    /* margin: 1rem 0 0.2rem; */
+    margin:  2rem auto;
+    /* text-shadow: 1px 1px 10px #fff, 1px 1px 10px #ccc; */
+    color: var(--faint_font_color);
+            transition: all ease 0.3s;
+}
+
+.date {
+    font-size: 1rem;
+    margin-bottom: 2rem;
+    margin: 1rem auto;
+}
+
+.calendar-section {
+    flex: 1;
+    padding: 25px;
+    border-right: 1px solid rgba(156, 163, 175, 0.2);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    /* max-width: 550px; */
+    margin-right: var(--section_gap);
+}
+
+#calendar{
+    max-width: 550px;
+    width: 90%;
+    margin: auto;
+}
+.month-navigation {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.month-navigation button {
+    background: none;
+    border: none;
+    color: #5c6ac4;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.month-navigation button:hover {
+    background-color: rgba(92, 106, 196, 0.1);
+    border-radius: 50%;
+}
+
+.weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    margin-bottom: 10px;
+    font-weight: 500;
+    color: #718096;
+    font-size: 0.8rem;
+}
+
+#calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    grid-gap: 5px;
+    flex-grow: 1;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.calendar-day {
+    aspect-ratio: 1/1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    /* border-radius: 50%; */
+    border-radius: 5%;
+    transition: all 0.2s ease;
+    position: relative;
+    font-size: 0.85rem;
+}
+#calendar-grid,
+.calendar-day {
+    min-width: 0;
+}
+.calendar-day:hover {
+    background-color: rgba(92, 106, 196, 0.1);
+}
+
+.calendar-day.selected {
+    background-color: #5c6ac4;
+    color: white;
+}
+
+.calendar-day.today {
+    border: 2px solid #5c6ac4;
+}
+
+.calendar-day.has-content::after {
+    content: '';
+    position: absolute;
+    bottom: 5px;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background-color: #5c6ac4;
+}
+.calendar-day.has-journal{
+    background-color: rgba(139, 136, 234, 0.6);
+}
+
+.calendar-day.other-month {
+    color: #cbd5e0;
+}
+
+#today-button {
+    margin-top: 15px;
+    background-color: #5c6ac4;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+    align-self: center;
+}
+
+#today-button:hover {
+    background-color: #4c5aa3;
+}
+
+/* Journal Section */
+.journal-section {
+    flex: 1;
+    padding: 25px;
+    border-right: 1px solid rgba(156, 163, 175, 0.2);
+    display: flex;
+    flex-direction: column;
+    margin-right: var(--section_gap);
+    /* max-width: 800px; */
+}
+
+.journal-header, .todo-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    /* or flex-start/center depending on layout */
+    gap: 10px;
+    /* optional spacing between items */
+        opacity: 0;
+}
+.journal-date, .todo-date {
+    text-align: center;
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+    color: #718096;
+}
+
+/* Only show .todo-header when in view-todo mode */
+.container.view-todo .todo-header {
+    opacity: 1;
+    max-height: 100px;
+    /* or whatever your header height is */
+    pointer-events: auto;
+}
+.container.view-journal .journal-header {
+    opacity: 1;
+    max-height: 100px;
+    /* or whatever your header height is */
+    pointer-events: auto;
+}
+#journal-content {
+    flex-grow: 1;
+    padding: 15px;
+    border: 1px solid rgba(156, 163, 175, 0.2);
+    border-radius: 10px;
+    resize: none;
+    background-color: rgba(255, 255, 255, 0.5);
+    font-size: 1.2rem;
+    line-height: 1.6;
+}
+
+#journal-content:focus {
+    outline: none;
+    border-color: #5c6ac4;
+    box-shadow: 0 0 0 2px rgba(92, 106, 196, 0.2);
+}
+
+/* Todo Section */
+.todo-section {
+    flex: 1;
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    /* max-width: 1200px; */
+    animation-delay: 0.2s;
+    margin: 0 auto;
+}
+
+.focus input {
+    font-size: 1.5rem;
+    width: 100%;
+    padding: 0.8rem;
+    text-align: center;
+    /* margin-bottom: 1.5rem; */
+    font-weight: 300;
+
+    border: none;
+    border-bottom: 2px solid var(--accent); 
+    background: transparent;
+    color: var(--text);
+}
+
+.focus input::placeholder {
+    opacity: 0.5;
+}
+#focusInput:focus {
+    outline: none;
+    /* Removes the default browser outline */
+    border: none;
+    /* Removes the border (if you don't want any border) */
+    box-shadow: none;
+    /* Removes any box-shadow (e.g., from Bootstrap) */
+}
+
+
+.todo-input-container {
+    display: flex;
+    align-items: center;
+    max-width: 800px;
+    /* margin: 0 auto; */
+    /* height: 45px; */
+    transition: all 0.3s ease;
+
+            gap: 10px;
+            padding: 6px 12px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-top: 20px;
+}
+
+/* Input setup */
+#todo-input {
+    flex-grow: 1;
+    padding: 10px 15px;
+    border: 0px solid rgba(156, 163, 175, 0.2);
+    border-radius: 10px;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+    opacity: 0.7;
+    background-color: rgba(0, 0, 0, 0);
+
+    /* max-height: 100px; */
+
+}
+
+#todo-input.hidden {
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    pointer-events: none;
+    /* Prevents interaction when hidden */
+}
+/* Action buttons (initially hidden) */
+.todo-input-container .todo-actions {
+    opacity: 0;
+    width: 0;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+/* When container is focused, show actions */
+.todo-input-container:focus-within .todo-actions {
+    opacity: 1;
+    width: auto;
+    pointer-events: auto;
+}
+
+/* Optional: add spacing or layout shift on focus */
+.todo-input-container:focus-within #todo-input {
+    border-radius: 20px 0 0 20px;
+    /* round only left when actions appear */
+}
+
+
+/* Slightly more visible on hover */
+#todo-input:hover {
+    opacity: 0.8;
+}
+
+/* Fully visible and styled on focus */
+#todo-input:focus {
+    opacity: 1;
+    outline: none;
+    border: 1px solid rgba(86, 134, 218, 0.7);}
+
+#add-todo {
+    background-color: #5c6ac4;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 0 20px 20px 0;
+    cursor: pointer;
+    font-size: 1.2rem;
+}
+
+#add-todo:hover {
+    background-color: #4c5aa3;
+}
+
+/* Initially hidden */
+.todo-input-container>*:not(#todo-input) {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-5px);
+    pointer-events: none;
+    transition: all 0.3s ease;
+}
+
+.todo-input-container:focus-within>*:not(#todo-input) {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+#todo-list {
+    list-style-type: none;
+    flex-grow: 1;
+    overflow-y: auto;
+    /* max-width: 1000px; */
+    width: 95%;
+    margin: 2rem auto;
+    scrollbar-width: thin;
+        /* Firefox */
+        scrollbar-color: rgba(100, 100, 100, 0.4) transparent;
+        /* Firefox */
+    width: 100%;
+}
+
+/* Default stacked layout */
+.todo-list {
+    display: block;
+}
+
+/* Expanded horizontal layout */
+
+.container.view-todo.todo-expanded .todo-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: flex-start;
+}
+
+.container.view-todo.todo-expanded .todo-list .task-group {
+    flex: 1 1 300px;
+    min-width: 250px;
+}
+
+.container.view-todo.todo-expanded .todo-list .color-group {
+    flex: 1 1 300px;
+    min-width: 250px;
+}
+
+/* .container.view-todo.todo-expanded .focus {
+    display: block;
+    position: absolute;
+    width: 100%;
+    top: 20px;
+    left:0px;
+    text-align: right;
+    font-size: 1.5rem;
+    color: var(--main_theme_color);
+    transition: all ease 0.3s;
+}
+.container.view-todo.todo-expanded .todo-input-container {
+    position: absolute;
+    top: 106px;
+    left:330px;
+    width: 50%;
+    text-align: center;
+    font-size: 1.5rem;
+    color: var(--main_theme_color);
+    transition: all ease 0.3s;
+    z-index: 10;
+}
+.container.view-todo.todo-expanded .sorting-controls {
+    position: absolute;
+    top: 80px;
+    width: 100%;
+    right: 0px;
+    text-align: center;
+    font-size: 1.5rem;
+    color: var(--main_theme_color);
+    transition: all ease 0.3s;
+} */
+
+.container.view-todo.todo-expanded {
+    display: flex;
+    flex-direction: column;
+    /* gap: 1rem; */
+    /* Spacing between sections */
+}
+
+/* Header row (sorting controls + input container) */
+.container.view-todo.todo-expanded .todo-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.5rem 0;
+    margin-bottom: 1rem;
+}
+
+.container.view-todo.todo-expanded .sorting-controls {
+    flex: 1 1 0;
+    text-align: left;
+}
+
+.container.view-todo.todo-expanded .todo-input-container {
+    flex: 2 1 0;
+    text-align: right;
+}
+
+/* Todo list (below header row) */
+.container.view-todo.todo-expanded .todo-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: flex-start;
+    margin-top: 0;
+    /* Reset if needed */
+}
+
+.todo-item {
+    display: flex;
+    flex-wrap: wrap; 
+    align-items: center;
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.4);
+    border-radius: 10px;
+    /* transition: all 0.2s ease; */
+    font-size: 1.1rem;
+    max-width: 1000px;
+    margin: 10px auto;
+    border: 1px solid rgba(255, 255, 255, 0.15);/* for light tone */    
+    cursor: grab;
+    /* transition: background-color 0.2s, opacity 0.2s; */
+}
+.drag-handle {
+    display: flex;
+    align-items: center;
+    margin-right: 8px;
+    cursor: grab;
+    color: #888;
+    font-size: 12px;
+    opacity: 0.6;
+}
+.todo-sublist {
+    min-height: 10px;
+    /* Allow dropping into empty lists */
+    padding: 2px;
+    transition: all 0.3s ease;
+}
+
+.todo-sublist.drag-over {
+    background-color: rgba(95, 158, 160, 0.1);
+    border-radius: 4px;
+}
+.drag-placeholder {
+    background-color: rgba(95, 158, 160, 0.2);
+    border: 1px dashed #5f9ea0;
+    border-radius: 4px;
+    margin: 4px 0;
+}
+.task-group {
+    margin-bottom: 20px;
+    /* transition: all 0.3s ease; */
+    margin-bottom: 20px;
+}
+
+.task-group.fade-in {
+    animation: fadeInUp 0.4s ease-out;
+}
+
+.todo-item:hover .drag-handle {
+    opacity: 1;
+}
+.todo-item:hover {
+    background-color: rgba(255, 255, 255, 0.8);
+}
+
+/* Hide the native checkbox but keep it accessible */
+.todo-item .task-content input[type="checkbox"],
+.subtask-item input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    width: 16px;
+    height: 16px;
+    border: 1px solid #999;
+    border-radius: 15%;
+    display: inline-block;
+    position: relative;
+    cursor: pointer;
+    margin-right: 10px;
+    transition: all 0.2s ease;
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+/* Add a hover effect */
+.todo-item .task-content input[type="checkbox"]:hover {
+    border-color: #5c6ac4;
+}
+
+/* Add checkmark for checked state */
+.todo-item .task-content input[type="checkbox"]::after,
+.subtask-item input[type="checkbox"]::after {
+    content: "";
+    position: absolute;
+    top: 1px;
+    left: 5px;
+    width: 4px;
+    height: 8px;
+    border: solid #5c6ac4;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+/* Show the checkmark when checked */
+.todo-item .task-content input[type="checkbox"]:checked::after,
+.subtask-item input[type="checkbox"]:checked::after  {
+    opacity: 1;
+}
+
+.todo-item .task-content {
+    flex-grow: 1;
+    display: flex;
+    cursor: pointer;
+    align-items: center;
+    padding: 4px 0;
+    font-size: 0.9em;
+        color: var(--dark_font_color)
+}
+
+
+.todo-item .task-content:hover {
+    flex-grow: 1;
+    cursor: pointer;
+    text-shadow: 2px 3px 5px 5px rgb(118, 7, 7);
+    /* text-decoration: underline; */
+}
+
+.todo-item.completed .task-content {
+    text-decoration: line-through;
+    color: #a0aec0;
+}
+
+.task-text {
+    flex: 1
+}
+
+.todo-item .delete-todo, .delete-task, .edit-task{
+    background: none;
+    border: none;
+    color: #e53e3e;
+    cursor: pointer;
+    font-size: 1rem;
+    opacity: 0.5;
+    transition: opacity 0.2s ease;
+}
+
+.todo-item .edit-task{
+    color: var(--main_theme_color)
+}
+
+.todo-item:hover, .delete-todo:hover, .delete-task:hover, .edit-task:hover{
+    opacity: 1;
+}
+/* Initial hidden state */
+.todo-item .task-actions{
+    opacity: 0;
+    transform: translateY(-5px);
+    /* slightly move it up */
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    pointer-events: none;
+
+    margin-left: 5px;
+    /* avoid clicking when hidden */
+}
+.todo-item .delete-subtask {
+    opacity: 0;
+    transform: translateY(-5px);
+    /* slightly move it up */
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    pointer-events: none;
+    /* avoid clicking when hidden */
+}
+/* Reveal on hover */
+.todo-item:hover .task-actions {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+    display: flex;
+    /* If layout needs it */
+    gap: 0.5rem;
+}
+.todo-item .drag-handle {
+    opacity: 0;
+    transform: translateY(-5px);
+    /* slightly move it up */
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    pointer-events: none;
+    /* avoid clicking when hidden */
+}
+.todo-item:hover .drag-handle {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+    display: flex;
+    /* If layout needs it */
+    gap: 0.5rem;
+}
+.todo-item:hover .delete-subtask {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+    display: flex;
+    /* If layout needs it */
+    gap: 0.5rem;
+}
+.task-dates, .task-date {
+    float: right;
+    font-size: 0.7rem;
+}
+
+.task-details{
+    font-size: 0.7rem;
+}
+.task-details .task-duration{
+    padding: 0px 12px;
+    color: #888;
+}
+
+/* Sync Status */
+.sync-status {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 15px;
+    gap: 10px;
+    color: #718096;
+    font-size: 0.9rem;
+}
+
+#sync-indicator {
+    display: flex;
+    align-items: center;
+}
+
+#sync-now,
+#login-button {
+    background-color: transparent;
+    border: 1px solid #5c6ac4;
+    color: #5c6ac4;
+    padding: 5px 10px;
+    border-radius: 15px;
+    cursor: pointer;
+    font-size: 0.8rem;
+}
+
+#sync-now:hover,
+#login-button:hover {
+    background-color: rgba(92, 106, 196, 0.1);
+}
+
+/* Dreamy Effects */
+.calendar-day,
+.todo-item,
+#journal-content {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.calendar-day:hover,
+.todo-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(92, 106, 196, 0.1);
+}
+
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .calendar-section,
+    .journal-section,
+    .todo-section {
+        border-right: none;
+        border-bottom: 1px solid rgba(156, 163, 175, 0.2);
+        min-height: 60vh;
+        max-width: 100%;
+        margin-right: 0px;
+    }
+
+    .sync-status {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .data-backup {
+        margin: 10px 0 0;
+    }
+
+    .view-tabs {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .view-tab {
+        flex: 1;
+        min-width: 80px;
+        text-align: center;
+    }
+
+          .container.view-journal .calendar-section,
+          .container.view-journal .todo-section,
+          .container.view-calendar .journal-section,
+          .container.view-calendar .todo-section,
+          .container.view-todo .calendar-section,
+          .container.view-todo .journal-section {
+              opacity: 0;
+              max-width: 0;
+              flex: 0 0 0;
+              padding: 0;
+              overflow: hidden;
+              transition: all 0.5s ease;
+              pointer-events: none;
+          }
+    
+          .container.view-journal .journal-section,
+          .container.view-calendar .calendar-section,
+          .container.view-todo .todo-section {
+              flex: 1 1 auto;
+              max-width: 100%;
+              opacity: 1;
+              transition: all 0.5s ease;
+          }
+
+}
+
+/* Dreamy animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.calendar-section,
+.journal-section,
+.todo-section {
+    /* animation: fadeIn 0.5s ease-out forwards; */
+    /* border-right: none; */
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 10px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+    /* transition: flex 0.4s ease, max-width 0.4s ease, opacity 0.3s ease; */
+    min-width: 100px;
+    overflow: hidden;
+}
+
+.journal-section {
+    animation-delay: 0.1s;
+}
+
+
+
+/* Data Backup Styles */
+/* Data Backup Styles */
+.data-backup {
+    display: flex;
+    margin-left: 15px;
+    gap: 8px;
+}
+
+#export-button,
+#import-button, 
+#bg-picker-button {
+    display: flex;
+    align-items: center;
+    background:rgba(255, 255, 255, 0.5);
+    border: none;
+    color: #5c6ac4;
+    padding: 5px 5px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+        align-items: center;
+        justify-content: center;
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: all 0.2s ease;
+}
+
+#export-button:hover,
+#import-button:hover,
+#bg-picker-button:hover {
+    background-color: rgba(92, 106, 196, 1);
+    transform: translateY(-2px);
+    color: white;
+    box-shadow: 0 4px 8px rgba(92, 106, 196, 0.1);
+}
+
+#export-button .icon,
+#import-button .icon {
+    margin-right: 5px;
+    font-size: 0.9rem;
+}
+
+/* Modal Dialog */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1100;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+    animation: fadeIn 0.3s ease;
+}
+
+.modal-content {
+    position: relative;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    margin: 5% auto;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.2);
+    max-width: 500px;
+    animation: slideIn 0.3s ease;
+}
+
+.close-modal {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    color: #718096;
+    font-size: 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.close-modal:hover {
+    color: #5c6ac4;
+}
+
+.modal h2 {
+    margin-top: 10px;
+    color: #5c6ac4;
+}
+
+.modal-body {
+    margin-top: 20px;
+}
+
+.modal-body p {
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 25px;
+}
+
+.modal-buttons button {
+    background-color: #5c6ac4;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.modal-buttons button:hover {
+    background-color: #4c5aa3;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(92, 106, 196, 0.2);
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+
+
+
+.privacy-blur {
+    filter: blur(8px);
+    user-select: none;
+}
+
+.privacy-blur:hover {
+    filter: blur(5px);
+    /* Slightly reduce blur on hover as a hint */
+}
+
+.privacy-blur::before {
+    content: attr(data-placeholder);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #5c6ac4;
+    filter: none;
+    z-index: 2;
+    pointer-events: none;
+    text-align: center;
+    font-size: 1.2rem;
+}
+
+/* Quick access privacy toggle button */
+.privacy-toggle {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(255, 255, 255, 0.7);
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.privacy-toggle:hover {
+    background: rgba(255, 255, 255, 0.9);
+}
+
+/* Icon states */
+.privacy-toggle .icon-visible,
+.privacy-toggle .icon-hidden {
+    transition: opacity 0.3s;
+}
+
+.privacy-toggle .icon-hidden {
+    display: none;
+}
+
+.privacy-active .privacy-toggle .icon-visible {
+    display: none;
+}
+
+.privacy-active .privacy-toggle .icon-hidden {
+    display: block;
+}
+
+
+
+/* Lock Screen Styles */
+.lock-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.9);
+    background-size: cover;
+    backdrop-filter: blur(20px);
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+}
+
+.lock-overlay.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.lock-content {
+    text-align: center;
+    padding: 2rem;
+    border-radius: 15px;
+    background: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
+    max-width: 400px;
+    width: 100%;
+}
+
+.lock-clock {
+    font-size: 4rem;
+    margin: 1rem auto;
+    color: #5c6ac4;
+}
+
+.lock-date {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    color: #718096;
+}
+
+.lock-message {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+    color: #4a5568;
+}
+
+.pin-modal {
+    z-index: 1000;
+}
+
+.pin-input {
+    padding: 1rem;
+    font-size: 1.2rem;
+    border: 2px solid #cbd5e0;
+    border-radius: 10px;
+    margin: 1rem auto;
+    text-align: center;
+    width: 80%;
+    max-width: 300px;
+    transition: all 0.3s;
+}
+
+.pin-input:focus {
+    outline: none;
+    border-color: #5c6ac4;
+    box-shadow: 0 0 0 3px rgba(92, 106, 196, 0.2);
+}
+
+.pin-input.error {
+    border-color: #e53e3e;
+    animation: shake 0.5s;
+}
+
+.unlock-button {
+    background-color: #5c6ac4;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 30px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    transition: all 0.3s;
+}
+
+.unlock-button:hover {
+    background-color: #4c5aa3;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(92, 106, 196, 0.3);
+}
+
+
+.lock-settings {
+    margin-top: 2rem;
+}
+
+.settings-button {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.3s;
+}
+
+.settings-button:hover {
+    opacity: 1;
+}
+.setting-group {
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.setting-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--button-color);
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+.setting-group input[type="checkbox"] {
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--button-color);
+    border-radius: 4px;
+    outline: none;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.setting-group input[type="checkbox"]:checked {
+    background-color: var(--button-color);
+    border-color: var(--button-color);
+}
+
+.setting-group input[type="checkbox"]:checked::after {
+    content: "✓";
+    position: absolute;
+    color: white;
+    font-size: 12px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.setting-group input[type="number"],
+.setting-group input[type="password"] {
+    width: 100%;
+    padding: 10px 15px;
+    border: 2px solid #e0c8e8;
+    border-radius: 8px;
+    background-color: rgba(255, 255, 255, 0.7);
+    color: var(--button-color);
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.setting-group input[type="number"]:focus,
+.setting-group input[type="password"]:focus {
+    outline: none;
+    border-color: var(--button-color);
+    box-shadow: 0 0 0 3px rgba(179, 136, 214, 0.2);
+}
+
+#set-lock-button {
+    background: linear-gradient(135deg, #b388d6 0%, var(--button-color) 100%);
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    width: 100%;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(149, 102, 205, 0.3);
+}
+
+#set-lock-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(68, 50, 187, 0.4);
+}
+
+
+
+/* Lock button visible in unlocked state */
+.lock-button {
+        background-color: rgba(92,106,196, 0);
+        color: var(--main_theme_color);
+        border: none;
+        /* padding: 12px 24px; */
+        border-radius: 30px;
+        font-size: 1.1rem;
+        cursor: pointer;
+        /* display: flex; */
+        /* align-items: center; */
+        /* justify-content: center; */
+        /* margin: auto; */
+        transition: all 0.3s;
+        height: 30px;
+        max-width: 30px;
+}
+
+.lock-button:hover {
+    background-color: white;
+    transform: scale(1.1);
+}
+
+body.locked .container,
+body.locked .sync-status {
+    filter: blur(10px);
+    pointer-events: none;
+}
+
+/* Notification */
+.notification {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background-color: #5c6ac4;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 30px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    transition: transform 0.3s, opacity 0.3s;
+    z-index: 1100;
+}
+
+.notification.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+}
+
+@keyframes shake {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    10%,
+    30%,
+    50%,
+    70%,
+    90% {
+        transform: translateX(-5px);
+    }
+
+    20%,
+    40%,
+    60%,
+    80% {
+        transform: translateX(5px);
+    }
+}
+
+
+/* background picker */
+
+.background-modal-content {
+    max-width: 800px;
+    padding: 30px;
+    margin: 20px auto;
+}
+
+.background-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.bg-thumbnail {
+    width: 100%;
+    height: 100px;
+    border-radius: 6px;
+    background-size: cover;
+    background-position: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.bg-thumbnail:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.bg-thumbnail.active {
+    border: 3px solid #4299e1;
+}
+
+.bg-thumbnail::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 30px;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.4));
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.bg-thumbnail:hover::after {
+    opacity: 1;
+}
+
+.bg-thumbnail-name {
+    position: absolute;
+    bottom: 5px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    color: white;
+    font-size: 12px;
+    z-index: 1;
+    opacity: 0;
+    transition: opacity 0.3s;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.bg-thumbnail:hover .bg-thumbnail-name {
+    opacity: 1;
+}
+
+.custom-background {
+    margin:  auto;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.custom-background label {
+    margin-right: 10px;
+    font-weight: 500;
+}
+
+.custom-background input[type="file"] {
+    flex: 1;
+    min-width: 200px;
+    padding: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+}
+
+
+.custom-background:hover {
+    background: rgba(245, 247, 250, 0.6);
+    border-color: rgba(179, 136, 214, 0.7);
+}
+
+.dreamy-upload-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    color: #6d4a8e;
+    font-weight: 500;
+    font-size: 15px;
+    transition: all 0.3s ease;
+}
+
+.dreamy-upload-label:hover {
+    color: #8a5a9f;
+    transform: translateY(-2px);
+}
+
+.dreamy-upload-icon {
+    width: 40px;
+    height: 40px;
+    padding: 10px;
+    background: rgba(179, 136, 214, 0.1);
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.dreamy-upload-label:hover .dreamy-upload-icon {
+    background: rgba(179, 136, 214, 0.2);
+    transform: scale(1.05);
+}
+
+.dreamy-upload-input {
+    display: none;
+    /* Hide the default file input */
+}
+
+.dreamy-upload-hint {
+    margin-top: 10px;
+    font-size: 12px;
+    color: #9e9e9e;
+    font-style: italic;
+}
+
+/* Drag and drop states */
+.custom-background.drag-over {
+    background: rgba(179, 136, 214, 0.1);
+    border-color: #b388d6;
+    box-shadow: 0 0 0 3px rgba(179, 136, 214, 0.2);
+}
+
+/* Preview for selected file */
+.upload-preview {
+    margin-top: 15px;
+    max-width: 100%;
+    border-radius: 10px;
+    display: none;
+    border: 1px solid rgba(179, 136, 214, 0.3);
+}
+
+
+
+/* Date range selector styling */
+.date-range-selector {
+    display: flex;
+    width: 250px;
+    gap: 10px;
+    margin: 0;
+    padding-top: 3px;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    max-width: 0;
+    /* max-height: 0; */
+    overflow: hidden;
+    transition: max-height 0.3s ease, opacity 0.3s ease;
+    opacity: 0;
+}
+
+.date-range-selector.visible {
+    max-width: 260px;
+    /* max-height: 60px; */
+    opacity: 1;
+}
+#toggle-date-range{
+    /* this is the button */
+    border: none;
+    cursor: pointer;
+}
+#toggle-date-range:hover {
+    /* this is the button */
+    box-shadow: 0 0 3px 1px rgba(179, 136, 214, 0.9);
+    transition: box-shadow 0.3s ease, opacity 0.3s ease;
+}
+
+/* Calendar multi-day task indicators */
+.calendar-day.has-multiday-tasks:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    /* background: linear-gradient(90deg, #4299e1, #76e5ff); */
+    background-color: rgba(139, 136, 234, 0.6);
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+}
+
+/* Task spanning multiple days in calendar */
+.task-span-indicator {
+    position: absolute;
+    background: rgba(66, 153, 225, 0.2);
+    border-left: 3px solid #4299e1;
+    height: 10px;
+    bottom: 18px;
+    left: 0;
+    right: 0;
+    font-size: 9px;
+    padding: 1px 3px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Task editor modal styling */
+#task-editor-modal {
+    position: absolute;
+    z-index: 999;
+    display: none;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid #ccc;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    padding: 0rem;
+    border-radius: 0.75rem;
+}
+#task-editor-modal .modal-content {
+    max-width: 400px;
+    margin: 0;
+        background: rgba(255, 255, 255, 0);
+}
+
+#task-editor-modal .modal-body {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+#task-editor-modal input[type="text"] {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1em;
+}
+
+#task-editor-modal .primary-button {
+    width: 100%;
+    padding: 12px 16px;
+    background-color: #4D96FF;
+    color: white;
+    font-size: 1em;
+    font-weight: 600;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    margin-top: auto;
+}
+
+#task-editor-modal .primary-button:hover {
+    background-color: #3a7de0;
+    transform: translateY(-1px);
+}
+
+.date-range-editor {
+    display: flex;
+    gap: 12px;
+}
+
+.date-range-editor .date-field {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.date-range-editor .date-field label {
+    font-size: 12px;
+    color: #666;
+}
+
+.date-range-editor .date-field input {
+    width: 100%;
+    padding: 6px;
+}
+
+.color-picker-field {
+    margin: 10px 0;
+}
+
+.color-options {
+    display: flex;
+    gap: 8px;
+    margin-top: 5px;
+    flex-wrap: wrap;
+}
+
+.color-swatch {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid transparent;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
+    transition: border 0.2s ease;
+}
+
+.color-swatch.selected {
+    border: 2px solid #333;
+}
+
+/* subtask related */
+.subtask-container {
+    width: 100%;
+    /* Force full width (breaks to new line) */
+    margin-left: 30px;
+    /* Indent subtasks */
+    padding: 0px 0;
+    /* border-left: 2px solid #eee; */
+    margin-top: 0px;
+    z-index: 100;
+    /* Space between main task and subtasks */
+}
+.subtask-input-container {
+    display: flex;
+    margin-bottom: 8px;
+    animation-delay: 0.2s;
+}
+
+.subtask-input {
+    flex: 1;
+    padding: 4px 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    /* font-size: 0.9em; */
+    width: 80%;
+        animation-delay: 0.2s;
+}
+
+.add-subtask-button {
+    background: #5f9ea0;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    width: 24px;
+    height: 24px;
+    margin-left: 5px;
+    cursor: pointer;
+}
+
+.subtask-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.subtask-item {
+    display: flex;
+    align-items: center;
+    padding: 4px 0;
+    font-size: 0.9em;
+}
+
+.subtask-text {
+    flex: 1;
+    margin: 0 8px;
+}
+
+.subtask-text.completed {
+    text-decoration: line-through;
+    color: #999;
+}
+
+.delete-subtask {
+    background: transparent;
+    color: #999;
+    border: none;
+    font-size: 1.1em;
+    cursor: pointer;
+}
+
+.delete-subtask:hover {
+    color: #ff6b6b;
+}
+
+.subtasks-section {
+    margin-top: 15px;
+    border-top: 1px solid #eee;
+    padding-top: 10px;
+}
+
+.subtask-input-group {
+    display: flex;
+    margin-bottom: 10px;
+}
+
+.edit-subtask-input {
+    flex: 1;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.add-subtask-btn {
+    background: #5f9ea0;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    width: 28px;
+    height: 28px;
+    margin-left: 5px;
+    cursor: pointer;
+}
+
+.edit-subtasks-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.edit-subtask-item {
+    display: flex;
+    align-items: center;
+    padding: 5px 0;
+}
+
+.edit-subtask-item span {
+    flex: 1;
+    margin: 0 8px;
+}
+
+.edit-subtask-item span.completed {
+    text-decoration: line-through;
+    color: #999;
+}
+
+.delete-subtask-btn {
+    background: transparent;
+    color: #999;
+    border: none;
+    font-size: 1.1em;
+    cursor: pointer;
+}
+
+.delete-subtask-btn:hover {
+    color: #ff6b6b;
+}
+
+.subtask-button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 0.8em;
+    padding: 0 5px;
+}
+
+.empty-subtask-dropzone {
+    display: none;
+    padding: 0.5em;
+    border: 2px dashed #ccc;
+    text-align: center;
+    font-style: italic;
+    color: #aaa;
+    border-radius: 5px;
+    margin-top: 0.5em;
+}
+
+.todo-item.show-subtask-dropzone .empty-subtask-dropzone {
+    display: block;
+}
+
+
+
+/* Toolbar layout */
+.toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding: 0 1.2em;
+    /* backdrop-filter: blur(12px); */
+    /* background: rgba(255, 255, 255, 0.08); */
+    /* border-bottom: 1px solid rgba(255, 255, 255, 0.2); */
+    position: sticky;
+    top: 0;
+    z-index: 20;
+}
+
+/* View Tabs Styles */
+.view-tabs {
+    display: flex;
+    gap: 0.6rem;
+    flex: 1;
+}
+
+.view-tab {
+    background: rgba(255, 255, 255, 0.8);
+    border: none;
+    
+    width: 40px;
+    height: 40px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    padding: 10px 10px;
+    font-size: 1.3rem;
+    color: var(--main_theme_color);
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+
+    margin: 0;
+}
+
+.view-tab:hover {
+    background: rgba(255, 255, 255, 1);
+    transform: translateY(-1px);
+}
+
+.view-tab.active {
+    /* box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2); */
+        background: var(--main_theme_color);
+            color: rgba(255, 255, 255, 1);
+}
+
+/* Search input */
+.search-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.4em;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    padding: 0.4em 0.6em;
+    backdrop-filter: blur(10px);
+    color: var(--main_theme_color);
+}
+
+#search-input {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--main_theme_color);
+    font-size: 1rem;
+    flex: 1;
+    min-width: 180px;
+}
+
+#search-input::placeholder {
+    color: var(--faint_font_color);
+}
+
+#search-input:focus {
+    color: var(--main_font_color);}
+
+/* Dropdown results */
+.search-dropdown {
+    position: absolute;
+    top: 110%;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.6);
+    /* backdrop-filter: blur(12px); */
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    padding: 0.5em 0;
+    max-height: 500px;
+    overflow-y: auto;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    opacity: 0;
+    transform: translateY(-10px);
+    pointer-events: none;
+    color: white;
+    z-index: 20;
+    font-size: 1.1rem;
+    max-width: 300px;
+}
+
+.search-dropdown.visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+.search-dropdown .result-item {
+    padding: 0.5em 1em;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+
+.search-dropdown .result-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+
+
+.font-settings {
+    margin-top: 20px;
+    color: #fff;
+}
+
+.dreamy-font-select {
+    width: 100%;
+    flex-grow: 1;
+        padding: 15px;
+        border: 1px solid rgba(156, 163, 175, 0.2);
+        border-radius: 10px;
+        resize: none;
+        background-color: rgba(255, 255, 255, 0.5);
+        /* font-size: 1.2rem; */
+        line-height: 1.6;
+        margin: auto;
+}
+
+
+/*sorting tasks and grouping by color */
+/* Sorting Controls */
+.sorting-controls {
+    display: flex;
+    gap: 10px;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: 20px;
+    /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); */
+}
+
+.sorting-controls label {
+    font-weight: 600;
+    color: var(--main_font_color);
+    font-size: 0.8rem;
+}
+
+.sort-button {
+    padding: 6px 12px;
+    border: 0px solid #ddd;
+    border-radius: 6px;
+    background: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--main_theme_color);
+}
+
+.sort-button:hover {
+    border-color: var(--main_theme_color);
+    background-color: #f0f8ff;
+    transform: translateY(-1px);
+}
+
+.sort-button.active {
+    background-color: var(--main_theme_color);
+    color: white;
+    border-color: var(--main_theme_color);
+    box-shadow: 0 2px 8px rgba(0, 123, 255, 0.25);
+}
+
+.view-mode-toggle {
+    display: flex;
+    gap: 0;
+    margin-left: auto;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.view-mode-btn {
+    padding: 6px 12px;
+    border: 0px solid var(--main_theme_color);
+    background: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--main_theme_color);
+}
+
+.view-mode-btn:first-child {
+    border-right: 1px solid var(--main_theme_color);
+}
+
+.view-mode-btn:hover {
+    background-color: #f8fff9;
+}
+
+.view-mode-btn.active {
+    background-color: var(--main_theme_color);
+    color: white;
+}
+
+/* Task Animation Styles */
+#todo-list.updating {
+    pointer-events: none;
+}
+
+.task-item-animated {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-origin: center;
+}
+
+
+
+
+/* Color Group Styling */
+.color-group {
+    margin-bottom: 20px;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.color-group:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+}
+
+.color-group-header {
+    padding: 12px 16px;
+    font-weight: 600;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.color-group-header::before {
+    content: '';
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: currentColor;
+    opacity: 0.8;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.color-group-header .task-count {
+    background: rgba(255, 255, 255, 0.25);
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    margin-left: auto;
+    backdrop-filter: blur(10px);
+}
+
+.color-group-content {
+    background: rgba(200, 200, 200, 0.2);
+    border: 1px solid #eee;
+}
+
+/* Status indicators within color groups */
+.status-subgroup {
+    border-left: 3px solid #ddd;
+    margin: 8px 0;
+    transition: all 0.2s ease;
+}
+
+.status-subgroup:hover {
+    border-left-color: #007bff;
+}
+
+.status-subgroup-header {
+    padding: 8px 12px;
+    background: #f8f9fa;
+    font-size: 12px;
+    font-weight: 600;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid #eee;
+}
+
+.status-subgroup-content {
+    padding: 0;
+}
+
+/* Predefined color styles */
+.color-red {
+    background: linear-gradient(135deg, #FF6B6B, #ee5a52);
+}
+
+.color-yellow {
+    background: linear-gradient(135deg, #FFD93D, #ffcc02);
+    color: #333;
+}
+
+.color-green {
+    background: linear-gradient(135deg, #6BCB77, #51b866);
+}
+
+.color-blue {
+    background: linear-gradient(135deg, #4D96FF, #357ae8);
+}
+
+.color-purple {
+    background: linear-gradient(135deg, #A66DD4, #9c5ac7);
+}
+
+.color-gray {
+    background: linear-gradient(135deg, #9E9E9E, #757575);
+}
+
+.color-none {
+    background: linear-gradient(135deg, #6c757d, #545b62);
+}
+
+/* Task color indicators */
+.todo-item,
+li[draggable="true"] {
+    transition: all 0.3s ease;
+    /* border-left: 4px solid transparent; */
+    position: relative;
+}
+
+.todo-item[data-color="#FF6B6B"],
+li[draggable="true"][data-color="#FF6B6B"] {
+    border-left-color: #FF6B6B;
+}
+
+.todo-item[data-color="#FFD93D"],
+li[draggable="true"][data-color="#FFD93D"] {
+    border-left-color: #FFD93D;
+}
+
+.todo-item[data-color="#6BCB77"],
+li[draggable="true"][data-color="#6BCB77"] {
+    border-left-color: #6BCB77;
+}
+
+.todo-item[data-color="#4D96FF"],
+li[draggable="true"][data-color="#4D96FF"] {
+    border-left-color: #4D96FF;
+}
+
+.todo-item[data-color="#A66DD4"],
+li[draggable="true"][data-color="#A66DD4"] {
+    border-left-color: #A66DD4;
+}
+
+.todo-item[data-color="#9E9E9E"],
+li[draggable="true"][data-color="#9E9E9E"] {
+    border-left-color: #9E9E9E;
+}
+
+.todo-item:not([data-color]),
+li[draggable="true"]:not([data-color]) {
+    border-left-color: #ddd;
+}
+
+/* Enhanced hover effects for colored tasks */
+.todo-item[data-color]:hover,
+li[draggable="true"][data-color]:hover {
+    transform: translateX(4px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Drag and drop enhancements for colored items */
+.todo-item[data-color].dragging,
+li[draggable="true"][data-color].dragging {
+    border-left-width: 6px;
+    transform: rotate(2deg) scale(1.02);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.fade-in {
+    animation: fadeInUp 0.4s ease-out;
+}
+
+.slide-in {
+    animation: slideIn 0.3s ease-out;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .sorting-controls {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 15px;
+    }
+
+    .view-mode-toggle {
+        margin-left: 0;
+        align-self: center;
+    }
+
+    .sort-button {
+        flex: 1;
+        text-align: center;
+    }
+
+    .color-group-header {
+        padding: 10px 12px;
+        font-size: 14px;
+    }
+
+    .status-subgroup-header {
+        padding: 6px 10px;
+        font-size: 11px;
+    }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    .sorting-controls {
+        background: #2d3748;
+        color: white;
+    }
+
+    .sort-button {
+        background: #4a5568;
+        border-color: #4a5568;
+        color: #e2e8f0;
+    }
+
+    .sort-button:hover {
+        background: #2b6cb0;
+        border-color: #2b6cb0;
+    }
+
+    .color-group-content {
+        background: #2d3748;
+        border-color: #4a5568;
+    }
+
+    .status-subgroup-header {
+        background: #4a5568;
+        color: #e2e8f0;
+        border-color: #718096;
+    }
+}

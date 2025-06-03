@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dreamy Tab</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="./assets/all.min.css">
+
+</head>
+
+<body>
+    <div id="bg-fade-overlay"></div>
+
+    <div class="content-wrapper">
+
+        <div class="toolbar">
+            <div class="view-tabs">
+                <!-- <button class="view-tab active" data-view="all" title="Show all (Alt+1)">📖</button>
+                <button class="view-tab" data-view="calendar" title="Calendar only (Alt+2)">📅</button>
+                <button class="view-tab" data-view="journal" title="Journal only (Alt+3)">📓</button>
+                <button class="view-tab" data-view="todo" title="To-Do only (Alt+4)" id="today_tab_button">📝</button> -->
+
+                            <button class="view-tab active" data-view="all" title="Show all (Alt+1)"><i class="fas fa-book-open"></i></button>
+                            <button class="view-tab" data-view="calendar" title="Calendar only (Alt+2)"><i class="fas fa-calendar-alt"></i></button>
+                            <button class="view-tab" data-view="journal" title="Journal only (Alt+3)"><i class="fas fa-book"></i></button>
+                            <button class="view-tab" data-view="todo" title="To-Do only (Alt+4)" id="today_tab_button"><i class="fas fa-pen-square"></i></button>
+            </div>
+            <div class="search-wrapper">
+                <!-- 🔍 --><i class="fas fa-search"></i>
+                <input type="text" id="search-input" placeholder="Search journal or tasks..." />
+                <div id="search-results" class="search-dropdown hidden"></div>
+
+            </div>
+
+            <button id="lock-button" class="lock-button"><!--🔒--><i class="fas fa-lock"></i></button>
+        </div>
+
+        <div class="container">
+            <div class="calendar-section">
+                <div class="clock" id="clock">--:--</div>
+                <div class="date" id="date">Loading...</div>
+
+                <div id="calendar">
+                    <div class="month-navigation">
+                        <button id="prev-month">◀</button>
+                        <h3 id="month-year">May 2025</h3>
+                        <button id="next-month">▶</button>
+                    </div>
+                    <div class="weekdays">
+                        <div>Sun</div>
+                        <div>Mon</div>
+                        <div>Tue</div>
+                        <div>Wed</div>
+                        <div>Thu</div>
+                        <div>Fri</div>
+                        <div>Sat</div>
+                    </div>
+                    <div id="calendar-grid"></div>
+                </div>
+
+                <button id="today-button">Today</button>
+            </div>
+
+            <div class="journal-section">
+                <div class="journal-header">
+                    <!-- <h2>Journal</h2> -->
+                    <div class="journal-date" id="journal-date">May 2, 2025</div>
+                </div>
+
+                <textarea id="journal-content" placeholder="Write your thoughts for today..."></textarea>
+            </div>
+
+            <div class="todo-section" id="todo-section">
+                <div class="todo-header">
+                    <!-- <h2>To-Do</h2> -->
+                    <div class="todo-date" id="todo-date">May 2, 2025</div>
+                </div>
+
+
+                <div class="focus">
+                    <input id="focusInput" placeholder="What's your main focus today?" />
+                </div>
+
+                <div class="todo-header-row" id="todo-header-row">
+                            <!-- Enhanced todo input with date range -->
+                            <div class="todo-input-container enhanced" id="new-task-input-container">
+                                <input type="text" id="todo-input" placeholder="Add a new task...">
+                            
+                                <div class="date-range-selector" id="date-range-selector">
+                                    <div class="date-field">
+                                        <label for="task-start-date">Start:</label>
+                                        <input type="date" id="task-start-date">
+                                    </div>
+                                    <div class="date-field">
+                                        <label for="task-end-date">End:</label>
+                                        <input type="date" id="task-end-date">
+                                    </div>
+                                </div>
+                            
+                                <button id="toggle-date-range" class="icon-button" title="Set date range">
+                                    <span class="calendar-icon">📅</span>
+                                </button>
+                            
+                                <button id="add-todo">+</button>
+                            </div>
+                            <div id="header-end"></div>
+                </div>
+
+
+                <!-- Template for multi-day task display -->
+                <template id="multi-day-task-template">
+                    <li class="todo-item multi-day-task">
+                        <input type="checkbox" class="task-checkbox">
+                        <div class="task-content">
+                            <span class="task-text"></span>
+                            <div class="task-details">
+                                <span class="task-dates"></span>
+                                <span class="task-duration"></span>
+                            </div>
+                            <div class="task-progress-bar">
+                                <div class="progress-fill"></div>
+                            </div>
+                        </div>
+                        <div class="task-actions">
+                            <button class="edit-task"><!--✏️--><i class="fas fa-edit" style="color: white;"></i></button>
+                            <button class="delete-task"><i class="fas fa-trash" style="color: white;"></i></button>
+                        </div>
+                    </li>
+                </template>
+
+
+
+
+                <div id="todo-list" class="todo-list"></div>
+            </div>
+        </div>
+
+            <!-- Multi-day task editor (for editing existing tasks) -->
+            <div id="task-editor-modal" class="task-editor-popover">
+                <div class="modal-content">
+                    <span class="close-modal">&times;</span>
+                    <div class="modal-body">
+                        <input type="text" id="edit-task-text" placeholder="Task description" active>
+                        <div class="date-range-editor">
+                            <div class="date-field">
+                                <label for="edit-start-date">Start date:</label>
+                                <input type="date" id="edit-start-date">
+                            </div>
+                            <div class="date-field">
+                                <label for="edit-end-date">End date:</label>
+                                <input type="date" id="edit-end-date">
+                            </div>
+                        </div>
+                        <div class="color-picker-field">
+                            <label>Task color:</label>
+                            <div class="color-options" id="color-options">
+                                <span class="color-swatch" data-color="#FF6B6B" style="background-color: #FF6B6B;"></span>
+                                <span class="color-swatch" data-color="#FFD93D" style="background-color: #FFD93D;"></span>
+                                <span class="color-swatch" data-color="#6BCB77" style="background-color: #6BCB77;"></span>
+                                <span class="color-swatch" data-color="#4D96FF" style="background-color: #4D96FF;"></span>
+                                <span class="color-swatch" data-color="#A66DD4" style="background-color: #A66DD4;"></span>
+                                <span class="color-swatch" data-color="#9E9E9E" style="background-color: #9E9E9E;"></span>
+                            </div>
+                        </div>
+                        <button id="save-task-edit" class="primary-button">Save Changes</button>
+                    </div>
+                </div>
+            </div>
+    </div>
+
+
+    <div class="sync-status">
+
+    </div>
+
+    <!-- <div id="backup-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2 id="modal-title">Data Backup</h2>
+            <div class="modal-body">
+                <p id="modal-message">Would you like to backup your data or restore from a previous backup?</p>
+                <div class="modal-buttons">
+                    <button id="modal-export-btn">Export Data</button>
+                    <button id="modal-import-btn">Import Data</button>
+                </div>
+            </div>
+        </div>
+    </div> -->
+
+
+    <!-- Add this to newtab.html, before the closing </body> tag -->
+    
+    <div id="lock-overlay" class="lock-overlay">
+        <div class="lock-content">
+            <div class="lock-clock" id="lock-clock">--:--</div>
+            <div class="lock-date" id="lock-date">Loading...</div>
+            <div class="lock-message"></div>
+            <input type="password" id="pin-input" placeholder="Enter PIN to unlock" class="pin-input">
+            <button id="unlock-button" class="unlock-button">
+                <span class="lock-icon">🔓</span>
+                <span>Unlock</span>
+            </button>
+            <div class="lock-settings">
+                <!-- <button id="lock-settings-button" class="settings-button">⚙️</button> -->
+                <button id="lock-settings-button" class="settings-button"><i class="fas fa-cog"></i></button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Settings Modal for Lock Screen -->
+    <div id="pin-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" id="close-pin-modal">&times;</span>
+            <h2>Security Settings</h2>
+            <div class="modal-body">
+                <div class="setting-group">
+                    <label for="auto-lock">Auto-lock after inactivity</label>
+                    <input type="checkbox" id="auto-lock">
+                </div>
+                <div class="setting-group">
+                    <label for="lock-time">Lock after (minutes):</label>
+                    <input type="number" id="lock-time" min="1" max="60" value="5">
+                </div>
+                <div class="setting-group">
+                    <label for="current-pin">Current PIN (if set):</label>
+                    <input type="password" id="current-pin">
+                </div>
+                <div class="setting-group">
+                    <label for="new-pin">New PIN (min 4 digits):</label>
+                    <input type="password" id="new-pin" minlength="4">
+                </div>
+                <button id="set-lock-button" class="primary-button">Save Settings</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- For notifications -->
+    <div id="notification" class="notification"></div>
+
+
+
+    <!-- background picker -->
+    <div id="background-modal" class="modal">
+        <div class="modal-content background-modal-content">
+            <span class="close-modal" id="close-background-modal">&times;</span>
+            <h2>Choose Your Background</h2>
+            <div class="background-grid" id="background-grid">
+                <!-- Background thumbnails will be inserted here -->
+            </div>
+            <div class="custom-background">
+                <label for="custom-bg-input" class="dreamy-upload-label">
+                    <svg class="dreamy-upload-icon" viewBox="0 0 24 24">
+                        <path fill="currentColor"
+                            d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z M8,15V17H16V15H8M8,11V13H16V11H8M8,7V9H16V7H8Z" />
+                    </svg>
+                    <span>Upload Your Dreamy Background</span>
+                </label>
+                <input type="file" id="custom-bg-input" accept="image/*" class="dreamy-upload-input">
+                <div class="dreamy-upload-hint">PNG, JPG or GIF (Max 5MB)</div>
+            </div>
+
+
+
+            <div class="font-settings">
+                <h2>Choose Your Font</h2>
+                <select id="font-selector" class="dreamy-font-select">
+                    <option value="default">Default</option>
+                    <option value="Arial">Arial</option>
+                    <option value="'Times New Roman', Times">Times New Roman</option>
+                    <option value="Courier New">Courier New</option>
+                    <option value="Comic Sans MS">Comic Sans</option>
+                    <option value="Roboto">Roboto</option>
+                    <option value="Lobster">Lobster</option>
+                    <option value="'Open Sans'">Open Sans</option>
+                    <option value="'Playfair Display'">Playfair Display</option>
+                </select>
+            </div>
+
+            <!-- <label for="opacitySlider">Transparency:</label>
+            <input type="range" id="opacitySlider" min="0" max="100" value="100"> -->
+
+
+            <hr/>
+            <br/>
+                        <h2>Backup your data</h2>
+
+                            <div class="data-backup" style="display: none;">
+                                <button id="export-button" title="Export your data">
+                                    <span class="icon">↑</span>
+                                    <span class="label">Export</span>
+                                </button>
+                                <button id="import-button" title="Import your data">
+                                    <span class="icon">↓</span>
+                                    <span class="label">Import</span>
+                                </button>
+                            </div>
+
+
+                        <div class="modal-body">
+                            <div class="modal-buttons">
+                                <button id="modal-export-btn">Export Data</button>
+                                <button id="modal-import-btn">Import Data</button>
+                            </div>
+                        </div>
+                    </br>
+                        <hr/>
+
+                        <br/>
+                        <h2 data-premium>Sync with your Google Account</h2>
+                        <p>To-dos will create new events on Google Calendar; all data including Journals will be synced to Google Drive for easy future restoration.</p>
+                        <div class="modal-buttons" data-premium>
+                            <span id="sync-indicator" data-premium>✓ Synced</span>
+
+                            <button id="sync-now" data-premium>Sync Now</button>
+                            <button id="modal-google-drive-import-btn" data-premium>Restore from Google Drive</button>
+                            <button id="login-button"data-premium >Login</button>
+                        </div>
+
+                        <br />
+
+                        <hr>
+                        
+                        <br/>
+                        <h2>Enjoying this? Buy me a coffee!</h2>
+                        <div class="modal-buttons">
+
+                        <form action="https://www.paypal.com/donate" method="post" target="_top">
+                            <input type="hidden" name="hosted_button_id" value="LGKDZD7SKEX6Q" />
+                            <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" border="0" name="submit"
+                                title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
+                            <img alt="" border="0" src="https://www.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1" />
+                        </form>
+                        </div>
+        </div>
+
+
+    </div>
+
+
+    <script src="app.js"></script>
+    <!-- <script src="premium.js" defer></script> -->
+    <!-- <script src="google-sync.js"></script> -->
+</body>
+
+</html>
