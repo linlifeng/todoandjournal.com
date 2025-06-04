@@ -16,64 +16,67 @@
     <div class="content-wrapper">
 
         <div class="toolbar">
-            <div class="view-tabs">
-                <!-- <button class="view-tab active" data-view="all" title="Show all (Alt+1)">📖</button>
-                <button class="view-tab" data-view="calendar" title="Calendar only (Alt+2)">📅</button>
-                <button class="view-tab" data-view="journal" title="Journal only (Alt+3)">📓</button>
-                <button class="view-tab" data-view="todo" title="To-Do only (Alt+4)" id="today_tab_button">📝</button> -->
-
-                            <button class="view-tab active" data-view="all" title="Show all (Alt+1)"><i class="fas fa-book-open"></i></button>
-                            <button class="view-tab" data-view="calendar" title="Calendar only (Alt+2)"><i class="fas fa-calendar-alt"></i></button>
-                            <button class="view-tab" data-view="journal" title="Journal only (Alt+3)"><i class="fas fa-book"></i></button>
-                            <button class="view-tab" data-view="todo" title="To-Do only (Alt+4)" id="today_tab_button"><i class="fas fa-pen-square"></i></button>
+            <!-- Add this inside your .toolbar div, it will be hidden on desktop -->
+            <div class="mobile-page-indicator" style="display: none;">
+                <div class="mobile-dot active" data-slide="0"></div>
+                <div class="mobile-dot" data-slide="1"></div>
+                <div class="mobile-dot" data-slide="2"></div>
             </div>
-<div class="search-lock-row">
-    <div class="search-wrapper">
-        <i class="fas fa-search"></i>
-        <input type="text" id="search-input" placeholder="Search journal or tasks..." />
-        <div id="search-results" class="search-dropdown hidden"></div>
-    </div>
-    <button id="lock-button" class="lock-button"><i class="fas fa-lock"></i></button>
-</div>
+            
+            <div class="view-tabs">
+                <button class="view-tab active" data-view="all" title="Show all (Alt+1)"><i class="fas fa-book-open"></i></button>
+                <button class="view-tab" data-view="calendar" title="Calendar only (Alt+2)"><i class="fas fa-calendar-alt"></i></button>
+                <button class="view-tab" data-view="journal" title="Journal only (Alt+3)"><i class="fas fa-book"></i></button>
+                <button class="view-tab" data-view="todo" title="To-Do only (Alt+4)" id="today_tab_button"><i class="fas fa-pen-square"></i></button>
+            </div>
+            <div class="search-lock-row">
+                <div class="search-wrapper">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="search-input" placeholder="Search journal or tasks..." />
+                    <div id="search-results" class="search-dropdown hidden"></div>
+                </div>
+                <button id="lock-button" class="lock-button"><i class="fas fa-lock"></i></button>
+            </div>
 
         </div>
 
         <div class="container">
-            <div class="calendar-section">
-                <div class="clock" id="clock">--:--</div>
-                <div class="date" id="date">Loading...</div>
 
-                <div id="calendar">
-                    <div class="month-navigation">
-                        <button id="prev-month">◀</button>
-                        <h3 id="month-year">May 2025</h3>
-                        <button id="next-month">▶</button>
+                <div class="calendar-section swipe-slide">
+                    <div class="clock" id="clock">--:--</div>
+                    <div class="date" id="date">Loading...</div>
+
+                    <div id="calendar">
+                        <div class="month-navigation">
+                            <button id="prev-month">◀</button>
+                            <h3 id="month-year">May 2025</h3>
+                            <button id="next-month">▶</button>
+                        </div>
+                        <div class="weekdays">
+                            <div>Sun</div>
+                            <div>Mon</div>
+                            <div>Tue</div>
+                            <div>Wed</div>
+                            <div>Thu</div>
+                            <div>Fri</div>
+                            <div>Sat</div>
+                        </div>
+                        <div id="calendar-grid"></div>
                     </div>
-                    <div class="weekdays">
-                        <div>Sun</div>
-                        <div>Mon</div>
-                        <div>Tue</div>
-                        <div>Wed</div>
-                        <div>Thu</div>
-                        <div>Fri</div>
-                        <div>Sat</div>
-                    </div>
-                    <div id="calendar-grid"></div>
+
+                    <button id="today-button">Today</button>
                 </div>
 
-                <button id="today-button">Today</button>
-            </div>
+                <div class="journal-section swipe-slide">
+                    <div class="journal-header">
+                        <!-- <h2>Journal</h2> -->
+                        <div class="journal-date" id="journal-date">May 2, 2025</div>
+                    </div>
 
-            <div class="journal-section">
-                <div class="journal-header">
-                    <!-- <h2>Journal</h2> -->
-                    <div class="journal-date" id="journal-date">May 2, 2025</div>
+                    <textarea id="journal-content" placeholder="Write your thoughts for today..."></textarea>
                 </div>
 
-                <textarea id="journal-content" placeholder="Write your thoughts for today..."></textarea>
-            </div>
-
-            <div class="todo-section" id="todo-section">
+            <div class="todo-section swipe-slide" id="todo-section">
                 <div class="todo-header">
                     <!-- <h2>To-Do</h2> -->
                     <div class="todo-date" id="todo-date">May 2, 2025</div>
@@ -132,8 +135,6 @@
                 </template>
 
 
-
-
                 <div id="todo-list" class="todo-list"></div>
             </div>
         </div>
@@ -175,20 +176,6 @@
     <div class="sync-status">
 
     </div>
-
-    <!-- <div id="backup-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal">&times;</span>
-            <h2 id="modal-title">Data Backup</h2>
-            <div class="modal-body">
-                <p id="modal-message">Would you like to backup your data or restore from a previous backup?</p>
-                <div class="modal-buttons">
-                    <button id="modal-export-btn">Export Data</button>
-                    <button id="modal-import-btn">Import Data</button>
-                </div>
-            </div>
-        </div>
-    </div> -->
 
 
     <!-- Add this to newtab.html, before the closing </body> tag -->

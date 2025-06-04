@@ -3768,12 +3768,12 @@ document.addEventListener('DOMContentLoaded', function () {
         sortingControls.className = 'sorting-controls';
         sortingControls.innerHTML = `
         <label>Sort by:</label>
-        <button class="sort-button active" data-sort="default"><li class="fas fa-clipboard-list"></li></button>
-        <button class="sort-button" data-sort="color"><li class="fas fa-palette"></li></button>
-        <button class="sort-button" data-sort="alphabetical"><li class="fas fa-sort-alpha-down"></li></button>
+        <button class="sort-button active" data-sort="default"><i class="fas fa-clipboard-list"></i></button>
+        <button class="sort-button" data-sort="color"><i class="fas fa-palette"></i></button>
+        <button class="sort-button" data-sort="alphabetical"><i class="fas fa-sort-alpha-down"></i></button>
         <div class="view-mode-toggle">
-            <button class="view-mode-btn active" data-mode="status"><li class="fas fa-clipboard-list"></li></button>
-            <button class="view-mode-btn" data-mode="color"><li class="fas fa-palette"></li></button>
+            <button class="view-mode-btn active" data-mode="status"><i class="fas fa-clipboard-list"></i></button>
+            <button class="view-mode-btn" data-mode="color"><i class="fas fa-palette"></i></button>
         </div>
     `;
 
@@ -3814,6 +3814,216 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 
+
+
+
 });
 
 
+// Add this to your existing app.js or create a new mobile.js file
+
+// Mobile swipe functionality - only initializes on mobile devices
+function initMobileSwipe() {
+    // Only run on mobile devices
+    if (window.innerWidth > 768) return;
+
+    const container = document.querySelector('.container');
+    const toolbar = document.querySelector('.toolbar');
+
+    // Add mobile classes
+    container.classList.add('mobile-swipe-container');
+
+    // Create page indicator
+    const indicator = document.createElement('div');
+    indicator.className = 'mobile-page-indicator';
+    indicator.innerHTML = `
+        <div class="mobile-dot active" data-slide="0"></div>
+        <div class="mobile-dot" data-slide="1"></div>
+        <div class="mobile-dot" data-slide="2"></div>
+    `;
+    toolbar.appendChild(indicator);
+
+    // Swipe state
+    let currentSlide = 0;
+    let startX = 0;
+    let currentX = 0;
+    let isDragging = false;
+    let isAnimating = false;
+    const threshold = 50;
+
+    // Get dots for navigation
+    const dots = document.querySelectorAll('.mobile-dot');
+
+    // Touch event handlers
+    function handleTouchStart(e) {
+        if (isAnimating) return;
+        startX = e.touches[0].clientX;
+        currentX = startX;
+        isDragging = true;
+        container.classList.add('no-transition');
+        container.classList.add('dragging');
+    }
+
+    function handleTouchMove(e) {
+        if (!isDragging) return;
+
+        // Prevent default only for horizontal swipes
+        const deltaX = Math.abs(e.touches[0].clientX - startX);
+        const deltaY = Math.abs(e.touches[0].clientY - (e.touches[0].clientY || 0));
+
+        if (deltaX > deltaY) {
+            e.preventDefault();
+        }
+
+        currentX = e.touches[0].clientX;
+        const diff = currentX - startX;
+        const translateX = -(currentSlide * 100) + (diff / window.innerWidth * 100);
+
+        // Add resistance at boundaries
+        let finalTranslateX = translateX;
+        if (currentSlide === 0 && diff > 0) {
+            finalTranslateX = diff / window.innerWidth * 30; // Resistance
+        } else if (currentSlide === 2 && diff < 0) {
+            finalTranslateX = -200 + (diff / window.innerWidth * 30); // Resistance
+        }
+
+        container.style.transform = `translateX(${finalTranslateX}vw)`;
+    }
+
+    function handleTouchEnd(e) {
+        if (!isDragging) return;
+        isDragging = false;
+        container.classList.remove('no-transition');
+        container.classList.remove('dragging');
+
+        const diff = currentX - startX;
+        const absDiff = Math.abs(diff);
+
+        if (absDiff > threshold) {
+            if (diff > 0 && currentSlide > 0) {
+                // Swipe right - go to previous slide
+                goToSlide(currentSlide - 1);
+            } else if (diff < 0 && currentSlide < 2) {
+                // Swipe left - go to next slide
+                goToSlide(currentSlide + 1);
+            } else {
+                // Snap back to current slide
+                updateSlide(currentSlide);
+            }
+        } else {
+            // Snap back to current slide
+            updateSlide(currentSlide);
+        }
+    }
+
+    function goToSlide(index) {
+        if (index < 0 || index > 2 || index === currentSlide || isAnimating) {
+            return;
+        }
+        currentSlide = index;
+        updateSlide(index);
+    }
+
+    function updateSlide(index) {
+        isAnimating = true;
+        container.style.transform = `translateX(-${index * 100}vw)`;
+
+        // Update dots
+        dots.forEach((dot, i) => {
+            dot.classList.toggle('active', i === index);
+        });
+
+        // Update view tabs state if they exist (for consistency with desktop)
+        const viewTabs = document.querySelectorAll('.view-tab');
+        viewTabs.forEach(tab => tab.classList.remove('active'));
+
+        // Map slides to view tabs: 0=calendar, 1=journal, 2=todo
+        const viewModes = ['calendar', 'journal', 'todo'];
+        const activeTab = document.querySelector(`[data-view="${viewModes[index]}"]`);
+        if (activeTab) {
+            activeTab.classList.add('active');
+        }
+
+        // Trigger any existing view change handlers
+        if (window.switchView) {
+            window.switchView(viewModes[index]);
+        }
+
+        // Reset animation flag
+        setTimeout(() => {
+            isAnimating = false;
+        }, 300);
+    }
+
+    // Add event listeners
+    container.addEventListener('touchstart', handleTouchStart, { passive: true });
+    container.addEventListener('touchmove', handleTouchMove, { passive: false });
+    container.addEventListener('touchend', handleTouchEnd, { passive: true });
+
+    // Dot navigation
+    dots.forEach((dot, index) => {
+        dot.addEventListener('click', () => goToSlide(index));
+    });
+
+    // Handle orientation changes
+    window.addEventListener('orientationchange', () => {
+        setTimeout(() => {
+            updateSlide(currentSlide);
+        }, 100);
+    });
+
+    // Handle resize
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+            if (window.innerWidth > 768) {
+                // Switched to desktop - remove mobile classes and reset
+                container.classList.remove('mobile-swipe-container', 'no-transition', 'dragging');
+                container.style.transform = '';
+                indicator.remove();
+            } else {
+                updateSlide(currentSlide);
+            }
+        }, 100);
+    });
+
+    // Initialize with first slide
+    updateSlide(0);
+}
+
+// Initialize on DOM load
+document.addEventListener('DOMContentLoaded', () => {
+    initMobileSwipe();
+});
+
+// Re-initialize on window resize (desktop to mobile)
+window.addEventListener('resize', () => {
+    if (window.innerWidth <= 768 && !document.querySelector('.mobile-page-indicator')) {
+        initMobileSwipe();
+    }
+});
+
+
+
+
+// let lastScrollTop = 0;
+// const todoList = document.getElementById("todo-list");
+// const todoHeader = document.querySelector(".todo-header");
+
+// todoList.addEventListener("scroll", function () {
+//     const st = todoList.scrollTop;
+
+//     if (st <= 0) {
+//         // At top
+//         todoHeader.classList.remove("hidden");
+//     } else if (st > lastScrollTop) {
+//         // Scrolling down
+//         todoHeader.classList.add("hidden");
+//     } else {
+//         // Scrolling up
+//         todoHeader.classList.remove("hidden");
+//     }
+
+//     lastScrollTop = st <= 0 ? 0 : st;
+// });
