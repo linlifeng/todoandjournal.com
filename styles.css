@@ -2876,13 +2876,13 @@ li[draggable="true"][data-color].dragging {
     }
 
     /* Modal adjustments for mobile */
-    .task-editor-popover {
+    .task-editor-popover, .task-editor-modal {
         /* Make modal full-screen on mobile */
-        position: fixed;
-        top: 0;
-        left: 0;
+        position: fixed !important;
+        top: 50px !important;
+        left: 0 !important;
         right: 0;
-        bottom: 0;
+        bottom: 50px;
         background: rgba(0, 0, 0, 0.8);
         z-index: 1000;
         padding: 20px;
