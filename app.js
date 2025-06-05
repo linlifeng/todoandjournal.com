@@ -3825,7 +3825,7 @@ document.addEventListener('DOMContentLoaded', function () {
 // Mobile swipe functionality - only initializes on mobile devices
 function initMobileSwipe() {
     // Only run on mobile devices
-    if (window.innerWidth > 768) return;
+    if (window.innerWidth > 1024) return;
 
     const container = document.querySelector('.container');
     const toolbar = document.querySelector('.toolbar');
@@ -3846,53 +3846,119 @@ function initMobileSwipe() {
     // Swipe state
     let currentSlide = 0;
     let startX = 0;
+    let startY = 0;
     let currentX = 0;
     let isDragging = false;
     let isAnimating = false;
+    let swipeDirection = null; // 'horizontal', 'vertical', or null
     const threshold = 50;
+    const directionThreshold = 15; // Pixels to determine swipe direction
 
     // Get dots for navigation
     const dots = document.querySelectorAll('.mobile-dot');
 
+    // Check if touch started in a no-swipe zone
+    function isInNoSwipeZone(element) {
+        // Check if the element or any parent has the no-swipe class
+        let current = element;
+        while (current && current !== container) {
+            if (current.classList && current.classList.contains('no-horizontal-swipe')) {
+                return true;
+            }
+            current = current.parentElement;
+        }
+        return false;
+    }
+
+    // Check if we should allow horizontal swiping based on touch position and movement
+    function shouldAllowHorizontalSwipe(startElement, deltaX, deltaY) {
+        // If touch started in a no-swipe zone, don't allow horizontal swipe
+        if (isInNoSwipeZone(startElement)) {
+            return false;
+        }
+
+        // If we haven't moved enough to determine direction, allow potential horizontal swipe
+        if (Math.abs(deltaX) < directionThreshold && Math.abs(deltaY) < directionThreshold) {
+            return true;
+        }
+
+        // If horizontal movement is significantly more than vertical, allow horizontal swipe
+        return Math.abs(deltaX) > Math.abs(deltaY) * 1.5;
+    }
+
     // Touch event handlers
     function handleTouchStart(e) {
         if (isAnimating) return;
-        startX = e.touches[0].clientX;
+
+        const touch = e.touches[0];
+        startX = touch.clientX;
+        startY = touch.clientY;
         currentX = startX;
-        isDragging = true;
-        container.classList.add('no-transition');
-        container.classList.add('dragging');
+        swipeDirection = null;
+
+        // Store the element where touch started
+        const startElement = document.elementFromPoint(touch.clientX, touch.clientY);
+
+        // Only start dragging if not in a no-swipe zone
+        if (!isInNoSwipeZone(startElement)) {
+            isDragging = true;
+        }
     }
 
     function handleTouchMove(e) {
         if (!isDragging) return;
 
-        // Prevent default only for horizontal swipes
-        const deltaX = Math.abs(e.touches[0].clientX - startX);
-        const deltaY = Math.abs(e.touches[0].clientY - (e.touches[0].clientY || 0));
+        const touch = e.touches[0];
+        currentX = touch.clientX;
+        const deltaX = currentX - startX;
+        const deltaY = touch.clientY - startY;
 
-        if (deltaX > deltaY) {
+        // Determine swipe direction if not already set
+        if (!swipeDirection) {
+            if (Math.abs(deltaX) > directionThreshold || Math.abs(deltaY) > directionThreshold) {
+                if (Math.abs(deltaX) > Math.abs(deltaY) * 1.5) {
+                    swipeDirection = 'horizontal';
+                } else if (Math.abs(deltaY) > Math.abs(deltaX) * 1.5) {
+                    swipeDirection = 'vertical';
+                }
+            }
+        }
+
+        // Only handle horizontal swipes and prevent default
+        if (swipeDirection === 'horizontal') {
             e.preventDefault();
+
+            container.classList.add('no-transition');
+            container.classList.add('dragging');
+
+            const translateX = -(currentSlide * 100) + (deltaX / window.innerWidth * 100);
+
+            // Add resistance at boundaries
+            let finalTranslateX = translateX;
+            if (currentSlide === 0 && deltaX > 0) {
+                finalTranslateX = deltaX / window.innerWidth * 30; // Resistance
+            } else if (currentSlide === 2 && deltaX < 0) {
+                finalTranslateX = -200 + (deltaX / window.innerWidth * 30); // Resistance
+            }
+
+            container.style.transform = `translateX(${finalTranslateX}vw)`;
+        } else if (swipeDirection === 'vertical') {
+            // For vertical swipes, stop our horizontal swipe handling
+            isDragging = false;
+            container.classList.remove('no-transition');
+            container.classList.remove('dragging');
         }
-
-        currentX = e.touches[0].clientX;
-        const diff = currentX - startX;
-        const translateX = -(currentSlide * 100) + (diff / window.innerWidth * 100);
-
-        // Add resistance at boundaries
-        let finalTranslateX = translateX;
-        if (currentSlide === 0 && diff > 0) {
-            finalTranslateX = diff / window.innerWidth * 30; // Resistance
-        } else if (currentSlide === 2 && diff < 0) {
-            finalTranslateX = -200 + (diff / window.innerWidth * 30); // Resistance
-        }
-
-        container.style.transform = `translateX(${finalTranslateX}vw)`;
     }
 
     function handleTouchEnd(e) {
-        if (!isDragging) return;
+        if (!isDragging || swipeDirection !== 'horizontal') {
+            isDragging = false;
+            swipeDirection = null;
+            return;
+        }
+
         isDragging = false;
+        swipeDirection = null;
         container.classList.remove('no-transition');
         container.classList.remove('dragging');
 
@@ -3991,7 +4057,6 @@ function initMobileSwipe() {
     // Initialize with first slide
     updateSlide(0);
 }
-
 // Initialize on DOM load
 document.addEventListener('DOMContentLoaded', () => {
     initMobileSwipe();
