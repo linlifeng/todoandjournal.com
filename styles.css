@@ -2566,7 +2566,14 @@ li[draggable="true"][data-color].dragging {
         touch-action: pan-y pinch-zoom;
         will-change: transform;
                 margin: 0;
+                width: 300vw;
+                overflow: hidden;
+                display: flex;
     }
+        .mobile-swipe-container>div {
+            width: 100vw;
+            flex-shrink: 0;
+        }
 
     /* Make each section take full mobile width */
     .calendar-section,
@@ -2633,6 +2640,7 @@ li[draggable="true"][data-color].dragging {
         font-size: 1.5em;
         margin-bottom: 5px;
         margin-top: 10px;
+        display: none;
     }
 
     #date {
@@ -2709,10 +2717,13 @@ li[draggable="true"][data-color].dragging {
 
     .todo-header-row {
         margin-bottom: 20px;
+        display: flex;
     }
 
     .todo-input-container {
         gap: 10px;
+        margin: 0;
+        flex: 3;
     }
 
     .todo-input-container.enhanced {
@@ -2735,11 +2746,13 @@ li[draggable="true"][data-color].dragging {
     }
 
     .todo-input-container.show-date-range .date-range-selector {
-        display: flex;
         gap: 10px;
         margin-top: 10px;
     }
 
+    #add-todo, #date-range-selector{
+        display: none;
+    }
     .date-field {
         display: flex;
         align-items: center;
@@ -2768,7 +2781,7 @@ li[draggable="true"][data-color].dragging {
   .sorting-controls {
       align-items: stretch;
       gap: 1rem;
-      width: 100%;
+      width: 100px;
       margin: 0;
   }
 
@@ -2778,7 +2791,8 @@ li[draggable="true"][data-color].dragging {
   .sort-buttons,
   .view-mode-toggle {
       justify-content: space-around;
-      width: 100%;
+      width: 100px;
+      height: 35px;
   }
 
   .sort-button,
@@ -2925,6 +2939,10 @@ li[draggable="true"][data-color].dragging {
         position: absolute;
         top: 5px;
         right: 5px;
+        z-index: 1000;
+    }
+    .icon{
+        background-color: rgba(0, 0, 0, 0);
     }
 }
 
